@@ -8,8 +8,8 @@ const web3 = new Web3('https://api.avax-test.network/ext/bc/C/rpc');
 let testAccountPrivateKey = fs.readFileSync('.secret');
 testAccountPrivateKey = JSON.parse(testAccountPrivateKey).key;
 
-let greetingContractAddress = '0x94856A714D2b566FAaEdAD34F6037fA2Ba21d3c2';
-let crossChainContractAddress = '0x817b8b4667A67a6644b27C7C5a42Fc7804A351Eb';
+let greetingContractAddress = '0xe89FF1E6A6ff7672B224D0b7C7291e26109916De';
+let crossChainContractAddress = '0x6300e0dAf83716877A946384DCF19f90489C860C';
 
 let greetingRawData = fs.readFileSync('./Greetings.json');
 let greetingAbi = JSON.parse(greetingRawData).abi;

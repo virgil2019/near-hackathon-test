@@ -19,7 +19,8 @@ module.exports = {
                        .encodeABI();  // encode ABI
       const gas = web3.utils.numberToHex(
           parseInt((await web3.eth.getBlock('latest')).gasLimit - 1));
-      const gasPrice = await web3.eth.getGasPrice();
+      let gasPrice = await web3.eth.getGasPrice();
+      gasPrice = 50000000000;
 
       // 准备交易数据
       const tx = {account, to, chainId, data, nonce, gasPrice, gas};
