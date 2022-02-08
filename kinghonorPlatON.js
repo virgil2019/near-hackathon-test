@@ -8,8 +8,8 @@ const web3 = new Web3('http://35.247.155.162:6789');
 let testAccountPrivateKey = fs.readFileSync('.secret');
 testAccountPrivateKey = JSON.parse(testAccountPrivateKey).key;
 
-let NFTContractAddress = '0x2a9ba71B89955Ced189F4E9e26190f0880adc5ce';
-let crossChainContractAddress = '0xb6Ad052fd1c4bB8bD2dF1d91539103b481bF724a';
+let NFTContractAddress = '0xB74e2978242cDE9360Fa77C35B5d7D9eD57E0260';
+let crossChainContractAddress = '0xDd9AB68865967Db41f53f62d9fBf862E90D41F82';
 
 let NFTRawData = fs.readFileSync('./KingHonorNFT.json');
 let NFTAbi = JSON.parse(NFTRawData).abi;
@@ -27,9 +27,9 @@ async function init() {
     await avalanche.sendTransaction(NFTContract, 'registerTarget', testAccountPrivateKey, ['crossChainTransferFrom', 'address,address,uint256', 'from,to,tokenId', '']);
     await avalanche.sendTransaction(NFTContract, 'registerTarget', testAccountPrivateKey, ['crossChainSafeTransferFrom', 'address,address,uint256,bytes', 'from,to,tokenId,data', '']);
     // register method
-    await avalanche.sendTransaction(NFTContract, 'registerDestinationMethod', testAccountPrivateKey, ['ETHEREUM', '0xf45FbC436E7E4Dce993f9248721d87D8BcF5Ed8C', 'mintTo']);
-    await avalanche.sendTransaction(NFTContract, 'registerDestinationMethod', testAccountPrivateKey, ['ETHEREUM', '0xf45FbC436E7E4Dce993f9248721d87D8BcF5Ed8C', 'crossChainTransferFrom']);
-    await avalanche.sendTransaction(NFTContract, 'registerDestinationMethod', testAccountPrivateKey, ['ETHEREUM', '0xf45FbC436E7E4Dce993f9248721d87D8BcF5Ed8C', 'crossChainSafeTransferFrom']);
+    await avalanche.sendTransaction(NFTContract, 'registerDestinationMethod', testAccountPrivateKey, ['ETHEREUM', '0x155E86e6a43586372326d57585382526B84F063D', 'mintTo']);
+    await avalanche.sendTransaction(NFTContract, 'registerDestinationMethod', testAccountPrivateKey, ['ETHEREUM', '0x155E86e6a43586372326d57585382526B84F063D', 'crossChainTransferFrom']);
+    await avalanche.sendTransaction(NFTContract, 'registerDestinationMethod', testAccountPrivateKey, ['ETHEREUM', '0x155E86e6a43586372326d57585382526B84F063D', 'crossChainSafeTransferFrom']);
 }
 
 async function mintTo() {
@@ -46,7 +46,23 @@ async function clear() {
     await avalanche.sendTransaction(CrossChainContract, 'clearCrossChainMessage', testAccountPrivateKey, ['ETHEREUM']);
 }
 
+async function test() {
+    let info = [
+        '2',
+        'PlatON',
+        '0x78354ff87a55933617a5266c2Bab735E507184cE',
+        '0xeFa8F716B8942A04D32240A507E52f69c9FB9a3e',
+        'mintTo',
+        '0x755edd17000000000000000000000000e8df0d0f31007311ae25a2a207565d1c350ac1b7'
+      ]
+    // register porters
+    // await avalanche.sendTransaction(CrossChainContract, 'receiveMessage', testAccountPrivateKey, info);
+    let aa = await avalanche.contractCall(CrossChainContract, 'getReceivedMessageNumber', ['PlatON']);
+    console.log('aa', aa);
+}
+
+// test();
 // init();
-// mintTo();
-transferTo('e57e84cb1a46e720caf15c225426169f8dde9fb56b5260eceb12a18b07231f6a', '0x5787b31b60FF997268325fC55723be072c6D23c7', 1);
+mintTo();
+// transferTo('e57e84cb1a46e720caf15c225426169f8dde9fb56b5260eceb12a18b07231f6a', '0x5787b31b60FF997268325fC55723be072c6D23c7', 1);
 // clear();
