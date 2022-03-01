@@ -8,8 +8,8 @@ const web3 = new Web3('https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa445
 let testAccountPrivateKey = fs.readFileSync('.secret');
 testAccountPrivateKey = JSON.parse(testAccountPrivateKey).key;
 
-let NFTContractAddress = '0x155E86e6a43586372326d57585382526B84F063D';
-let crossChainContractAddress = '0x178440B5aF2E61E81e28f762AbA91084723960B6';
+let NFTContractAddress = '0xa215eF1919f9cc314b4E0c31B96fB83eaeC0cf30';
+let crossChainContractAddress = '0x3B8917472c7f3a2CCBc41f2f9f28A2D94bfb8c44';
 
 let NFTRawData = fs.readFileSync('./KingHonorNFTView.json');
 let NFTAbi = JSON.parse(NFTRawData).abi;
@@ -21,9 +21,9 @@ let CrossChainContract = new web3.eth.Contract(CrossChainAbi, crossChainContract
 
 async function init() {
     // register senders
-    await avalanche.sendTransaction(NFTContract, 'registerSourceSender', testAccountPrivateKey, ['PlatON', '0xB74e2978242cDE9360Fa77C35B5d7D9eD57E0260', 'mintTo']); 
-    await avalanche.sendTransaction(NFTContract, 'registerSourceSender', testAccountPrivateKey, ['PlatON', '0xB74e2978242cDE9360Fa77C35B5d7D9eD57E0260', 'crossChainTransferFrom']); 
-    await avalanche.sendTransaction(NFTContract, 'registerSourceSender', testAccountPrivateKey, ['PlatON', '0xB74e2978242cDE9360Fa77C35B5d7D9eD57E0260', 'crossChainSafeTransferFrom']); 
+    await avalanche.sendTransaction(NFTContract, 'registerSourceSender', testAccountPrivateKey, ['PlatONEVM', '0x87F8E245E82Fc9db46A229691463139850362F3B', 'mintTo']); 
+    await avalanche.sendTransaction(NFTContract, 'registerSourceSender', testAccountPrivateKey, ['PlatONEVM', '0x87F8E245E82Fc9db46A229691463139850362F3B', 'crossChainTransferFrom']); 
+    await avalanche.sendTransaction(NFTContract, 'registerSourceSender', testAccountPrivateKey, ['PlatONEVM', '0x87F8E245E82Fc9db46A229691463139850362F3B', 'crossChainSafeTransferFrom']); 
     // register porters
     await avalanche.sendTransaction(CrossChainContract, 'changePortersAndRequirement', testAccountPrivateKey, [['0x30ad2981E83615001fe698b6fBa1bbCb52C19Dfa'], 1]); 
     // set cross chain contract
@@ -37,24 +37,26 @@ async function init() {
 }
 
 async function test() {
-    let info = [
-        '2',
-        'PlatON',
-        '0x78354ff87a55933617a5266c2Bab735E507184cE',
-        '0xeFa8F716B8942A04D32240A507E52f69c9FB9a3e',
-        'mintTo',
-        '0x755edd17000000000000000000000000e8df0d0f31007311ae25a2a207565d1c350ac1b7'
-      ]
-    // register porters
+    // let info = [
+    //     '1',
+    //     'PlatON',
+    //     '0x78354ff87a55933617a5266c2Bab735E507184cE',
+    //     '0xeFa8F716B8942A04D32240A507E52f69c9FB9a3e',
+    //     'mintTo',
+    //     '0x755edd17000000000000000000000000e8df0d0f31007311ae25a2a207565d1c350ac1b7'
+    //   ]
+    // // register porters
     // await avalanche.sendTransaction(CrossChainContract, 'receiveMessage', testAccountPrivateKey, info); 
 
     // let aa = await avalanche.contractCall(NFTContract, 'ownerOf', [1]);
-    let aa = await avalanche.contractCall(CrossChainContract, 'getReceivedMessageNumber', ['PlatON']);
+    let aa = await avalanche.contractCall(CrossChainContract, 'getReceivedMessageNumber', ['PlatONEVM']);
+    // let aa = await avalanche.contractCall(NFTContract, 'totalSupply', []);    
+    // let aa = await avalanche.contractCall(NFTContract, 'owner', []);    
     console.log('aa', aa);
 }
 
 async function clear() {
-    await avalanche.sendTransaction(CrossChainContract, 'clearCrossChainMessage', testAccountPrivateKey, ['PlatON']);
+    await avalanche.sendTransaction(CrossChainContract, 'clearCrossChainMessage', testAccountPrivateKey, ['PlatONEVM']);
 }
 
 init();

@@ -1,5 +1,6 @@
 const Web3 = require('web3');
 const web3 = new Web3('https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161');
+web3.eth.handleRevert = true;
 
 const chainId = 4;
 
@@ -20,7 +21,7 @@ module.exports = {
       const gas = web3.utils.numberToHex(
           parseInt((await web3.eth.getBlock('latest')).gasLimit - 1));
       let gasPrice = await web3.eth.getGasPrice();
-      gasPrice = 50000000000;
+      gasPrice = 20000000000;
 
       // 准备交易数据
       const tx = {account, to, chainId, data, nonce, gasPrice, gas: 1000000};

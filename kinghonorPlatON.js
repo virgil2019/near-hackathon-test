@@ -2,14 +2,15 @@ const Web3 = require('web3');
 const fs = require('fs');
 const avalanche = require('./platon');
 
-const web3 = new Web3('http://35.247.155.162:6789');
+// const web3 = new Web3('http://35.247.155.162:6789');
+const web3 = new Web3('https://openapi.platon.network/rpc');
 
 // test account
 let testAccountPrivateKey = fs.readFileSync('.secret');
 testAccountPrivateKey = JSON.parse(testAccountPrivateKey).key;
 
-let NFTContractAddress = '0xB74e2978242cDE9360Fa77C35B5d7D9eD57E0260';
-let crossChainContractAddress = '0xDd9AB68865967Db41f53f62d9fBf862E90D41F82';
+let NFTContractAddress = '0x87F8E245E82Fc9db46A229691463139850362F3B';
+let crossChainContractAddress = '0x49766f787b1E184c5EeAEA36d1eC090Cf25BD72e';
 
 let NFTRawData = fs.readFileSync('./KingHonorNFT.json');
 let NFTAbi = JSON.parse(NFTRawData).abi;
@@ -20,20 +21,20 @@ let CrossChainAbi = JSON.parse(CrossChainRawData).abi;
 let CrossChainContract = new web3.eth.Contract(CrossChainAbi, crossChainContractAddress);
 
 async function init() {
-    // // set cross chain contract
+    // set cross chain contract
     await avalanche.sendTransaction(NFTContract, 'setCrossChainContract', testAccountPrivateKey, [crossChainContractAddress]);
-    // // register target
+    // register target
     await avalanche.sendTransaction(NFTContract, 'registerTarget', testAccountPrivateKey, ['mintTo', 'address', 'to', '']);
     await avalanche.sendTransaction(NFTContract, 'registerTarget', testAccountPrivateKey, ['crossChainTransferFrom', 'address,address,uint256', 'from,to,tokenId', '']);
     await avalanche.sendTransaction(NFTContract, 'registerTarget', testAccountPrivateKey, ['crossChainSafeTransferFrom', 'address,address,uint256,bytes', 'from,to,tokenId,data', '']);
     // register method
-    await avalanche.sendTransaction(NFTContract, 'registerDestinationMethod', testAccountPrivateKey, ['ETHEREUM', '0x155E86e6a43586372326d57585382526B84F063D', 'mintTo']);
-    await avalanche.sendTransaction(NFTContract, 'registerDestinationMethod', testAccountPrivateKey, ['ETHEREUM', '0x155E86e6a43586372326d57585382526B84F063D', 'crossChainTransferFrom']);
-    await avalanche.sendTransaction(NFTContract, 'registerDestinationMethod', testAccountPrivateKey, ['ETHEREUM', '0x155E86e6a43586372326d57585382526B84F063D', 'crossChainSafeTransferFrom']);
+    await avalanche.sendTransaction(NFTContract, 'registerDestinationMethod', testAccountPrivateKey, ['RINKEBY', '0xa215eF1919f9cc314b4E0c31B96fB83eaeC0cf30', 'mintTo']);
+    await avalanche.sendTransaction(NFTContract, 'registerDestinationMethod', testAccountPrivateKey, ['RINKEBY', '0xa215eF1919f9cc314b4E0c31B96fB83eaeC0cf30', 'crossChainTransferFrom']);
+    await avalanche.sendTransaction(NFTContract, 'registerDestinationMethod', testAccountPrivateKey, ['RINKEBY', '0xa215eF1919f9cc314b4E0c31B96fB83eaeC0cf30', 'crossChainSafeTransferFrom']);
 }
 
 async function mintTo() {
-    await avalanche.sendTransaction(NFTContract, 'mintTo', testAccountPrivateKey, ['0xE8dF0d0f31007311aE25a2a207565D1C350AC1B7']);
+    await avalanche.sendTransaction(NFTContract, 'mintTo', testAccountPrivateKey, ['0xe4f6931504bda3530eda566f4047277372c75e25']);
 }
 
 async function transferTo(priKey, to, id) {
@@ -43,7 +44,7 @@ async function transferTo(priKey, to, id) {
 }
 
 async function clear() {
-    await avalanche.sendTransaction(CrossChainContract, 'clearCrossChainMessage', testAccountPrivateKey, ['ETHEREUM']);
+    await avalanche.sendTransaction(CrossChainContract, 'clearCrossChainMessage', testAccountPrivateKey, ['RINKEBY']);
 }
 
 async function test() {
@@ -57,7 +58,9 @@ async function test() {
       ]
     // register porters
     // await avalanche.sendTransaction(CrossChainContract, 'receiveMessage', testAccountPrivateKey, info);
-    let aa = await avalanche.contractCall(CrossChainContract, 'getReceivedMessageNumber', ['PlatON']);
+    // let aa = await avalanche.contractCall(CrossChainContract, 'getReceivedMessageNumber', ['PlatON']);
+    // let aa = await avalanche.contractCall(NFTContract, 'totalSupply', []);    
+    let aa = await avalanche.contractCall(CrossChainContract, 'owner', []);    
     console.log('aa', aa);
 }
 

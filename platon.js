@@ -1,7 +1,8 @@
 const Web3 = require('web3');
-const web3 = new Web3('http://35.247.155.162:6789');
+const web3 = new Web3('https://openapi.platon.network/rpc');
+web3.eth.handleRevert = true;
 
-const chainId = 210309;
+const chainId = 100;
 
 module.exports = {
   // 通过私钥签名交易
